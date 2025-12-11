@@ -564,6 +564,7 @@ export class WorkbenchStore {
 
     if (data.action.type === 'file' || data.action.type === 'diff') {
       const wc = await webcontainer;
+      // @ts-ignore - We know filePath exists on both FileAction and our diff action (which reuses FileAction structure)
       const fullPath = path.join(wc.workdir, data.action.filePath);
 
       if (this.selectedFile.value !== fullPath) {
