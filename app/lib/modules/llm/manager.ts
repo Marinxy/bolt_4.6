@@ -1,7 +1,7 @@
 import type { IProviderSetting } from '~/types/model';
 import { BaseProvider } from './base-provider';
 import type { ModelInfo, ProviderInfo } from './types';
-import * as providers from './registry';
+import { PROVIDER_LIST } from './registry';
 import { createScopedLogger } from '~/utils/logger';
 
 const logger = createScopedLogger('LLMManager');
@@ -12,7 +12,7 @@ export class LLMManager {
   private readonly _env: any = {};
 
   private constructor(_env: Record<string, string>) {
-    this._registerProvidersFromDirectory();
+    this._registerProvidersFromList();
     this._env = _env;
   }
 
@@ -27,23 +27,13 @@ export class LLMManager {
     return this._env;
   }
 
-  private async _registerProvidersFromDirectory() {
+  private async _registerProvidersFromList() {
     try {
-      /*
-       * Dynamically import all files from the providers directory
-       * const providerModules = import.meta.glob('./providers/*.ts', { eager: true });
-       */
-
-      // Look for exported classes that extend BaseProvider
-      for (const exportedItem of Object.values(providers)) {
-        if (typeof exportedItem === 'function' && exportedItem.prototype instanceof BaseProvider) {
-          const provider = new exportedItem();
-
-          try {
-            this.registerProvider(provider);
-          } catch (error: any) {
-            logger.warn('Failed To Register Provider: ', provider.name, 'error:', error.message);
-          }
+      for (const provider of PROVIDER_LIST) {
+        try {
+          this.registerProvider(provider);
+        } catch (error: any) {
+          logger.warn('Failed To Register Provider: ', provider.name, 'error:', error.message);
         }
       }
     } catch (error) {

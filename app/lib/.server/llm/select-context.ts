@@ -1,4 +1,5 @@
 import { generateText, type CoreTool, type GenerateTextResult, type Message } from 'ai';
+import { contextSelectionCache } from './cache';
 import ignore from 'ignore';
 import type { IProviderSetting } from '~/types/model';
 import { IGNORE_PATTERNS, type FileMap } from './constants';
@@ -118,7 +119,26 @@ export async function selectContext(props: {
     throw new Error('No user message found');
   }
 
-  // select files from the list of code file from the project that might be useful for the current request from the user
+  const cacheKey = JSON.stringify({ model: currentModel, provider: currentProvider, summary, lastUserMessage });
+  const cached = contextSelectionCache.get(cacheKey);
+  if (cached) {
+    if (onFinish) {
+      onFinish({} as any);
+    }
+    return cached as FileMap;
+  }
+
+  const isHighContextModel =
+    currentModel.toLowerCase().includes('glm-4') ||
+    currentModel.toLowerCase().includes('claude-3-opus') ||
+    currentModel.toLowerCase().includes('gemini-1.5') ||
+    currentModel.toLowerCase().includes('gemini-2.0');
+
+  const fileLimit = isHighContextModel ? 50 : 5;
+  const contextWarning = isHighContextModel
+    ? 'You have a large context window (200k+ tokens), so you can include many relevant files.'
+    : 'context buffer is extremlly expensive, so only include files that are absolutely necessary.';
+
   const resp = await generateText({
     system: `
         You are a software engineer. You are working on a project. You have access to the following files:
@@ -162,9 +182,9 @@ export async function selectContext(props: {
         CRITICAL RULES:
         * Only include relevant files in the context buffer.
         * context buffer should not include any file that is not in the list of files above.
-        * context buffer is extremlly expensive, so only include files that are absolutely necessary.
+        * ${contextWarning}
         * If no changes are needed, you can leave the response empty updateContextBuffer tag.
-        * Only 5 files can be placed in the context buffer at a time.
+        * Only ${fileLimit} files can be placed in the context buffer at a time.
         * if the buffer is full, you need to exclude files that is not needed and include files that is relevent.
 
         `,
@@ -174,6 +194,9 @@ export async function selectContext(props: {
       apiKeys,
       providerSettings,
     }),
+    ...(provider.name === 'ZAI'
+      ? { temperature: 0.6, topP: 0.9, thinking: { type: 'enabled' } }
+      : {}),
   });
 
   const response = resp.text;
@@ -228,6 +251,7 @@ export async function selectContext(props: {
     throw new Error(`Bolt failed to select files`);
   }
 
+  contextSelectionCache.set(cacheKey, filteredFiles);
   return filteredFiles;
 
   // generateText({

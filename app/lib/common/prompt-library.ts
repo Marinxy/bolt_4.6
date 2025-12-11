@@ -1,6 +1,7 @@
 import { getSystemPrompt } from './prompts/prompts';
 import optimized from './prompts/optimized';
 import { getFineTunedPrompt } from './prompts/new-prompt';
+import { getGLM46Prompt } from './prompts/glm-4-6';
 import type { DesignScheme } from '~/types/design-scheme';
 
 export interface PromptOptions {
@@ -41,6 +42,11 @@ export class PromptLibrary {
       label: 'Optimized Prompt (experimental)',
       description: 'An Experimental version of the prompt for lower token usage',
       get: (options) => optimized(options),
+    },
+    'glm-4-6': {
+      label: 'GLM-4.6 Optimized',
+      description: 'Optimized for Z.ai GLM-4.6 model (200k context)',
+      get: (options) => getGLM46Prompt(options.cwd, options.supabase),
     },
   };
   static getList() {
