@@ -171,6 +171,10 @@ export const ChatImpl = memo(
             messageLength: message.content.length,
           });
           updateUsage(usage);
+        } else {
+          // Fallback: if usage is missing in response, try to fetch from usage store if available or estimate?
+          // For now, let's log a warning
+          console.warn('No usage data received from chat response');
         }
 
         logger.debug('Finished streaming');
