@@ -1,10 +1,9 @@
 import { WORK_DIR } from '~/utils/constants';
 import { allowedHTMLElements } from '~/utils/markdown';
-import { stripIndents } from '~/utils/stripIndent';
 
 export const getGLM46Prompt = (
   cwd: string = WORK_DIR,
-  supabase?: {
+  _supabase?: {
     isConnected: boolean;
     hasSelectedProject: boolean;
     credentials?: { anonKey?: string; supabaseUrl?: string };

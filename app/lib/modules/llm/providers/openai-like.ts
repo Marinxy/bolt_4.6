@@ -49,9 +49,7 @@ export default class OpenAILikeProvider extends BaseProvider {
         name: model.id,
         label: model.id,
         provider: this.name,
-        maxTokenAllowed:
-          model.context_length ||
-          (model.id.toLowerCase().includes('glm-4') ? 200000 : 8000),
+        maxTokenAllowed: model.context_length || (model.id.toLowerCase().includes('glm-4') ? 200000 : 8000),
         maxCompletionTokens: model.id.toLowerCase().includes('glm-4') ? 16384 : undefined,
       }));
     } catch (error) {
@@ -66,8 +64,10 @@ export default class OpenAILikeProvider extends BaseProvider {
         return this._parseModelsFromEnv(modelsEnv);
       }
 
-      // Default fallback models if no environment variable is set
-      // This is particularly useful for providers like Z.ai (GLM-4.6)
+      /*
+       * Default fallback models if no environment variable is set
+       * This is particularly useful for providers like Z.ai (GLM-4.6)
+       */
       return [
         {
           name: 'glm-4.6',

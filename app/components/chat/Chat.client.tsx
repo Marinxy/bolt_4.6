@@ -172,8 +172,10 @@ export const ChatImpl = memo(
           });
           updateUsage(usage);
         } else {
-          // Fallback: if usage is missing in response, try to fetch from usage store if available or estimate?
-          // For now, let's log a warning
+          /*
+           * Fallback: if usage is missing in response, try to fetch from usage store if available or estimate?
+           * For now, let's log a warning
+           */
           console.warn('No usage data received from chat response');
         }
 

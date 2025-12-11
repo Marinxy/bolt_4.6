@@ -1,9 +1,8 @@
-
 export function applyDiff(originalContent: string, diffContent: string): string {
   const markers = {
     start: '<<<<',
     mid: '====',
-    end: '>>>>'
+    end: '>>>>',
   };
 
   let result = originalContent;
@@ -16,12 +15,16 @@ export function applyDiff(originalContent: string, diffContent: string): string 
       // Retry with trimmed whitespace if exact match fails
       const trimmedResult = result.trim();
       const trimmedSearch = block.search.trim();
+
       if (trimmedResult.includes(trimmedSearch)) {
         result = result.replace(trimmedSearch, block.replace);
       } else {
         console.warn('Could not find match for diff block:', block.search);
-        // We could throw an error or just continue. 
-        // For resilience, we'll continue but log the failure.
+
+        /*
+         * We could throw an error or just continue.
+         * For resilience, we'll continue but log the failure.
+         */
       }
     }
   }
@@ -46,6 +49,7 @@ function parseDiffBlocks(content: string, markers: { start: string; mid: string;
       if (mode !== 'idle') {
         // malformed previous block, discard or handle error
       }
+
       mode = 'search';
       buffer = [];
       currentBlock = {};

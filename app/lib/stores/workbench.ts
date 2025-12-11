@@ -564,6 +564,7 @@ export class WorkbenchStore {
 
     if (data.action.type === 'file' || data.action.type === 'diff') {
       const wc = await webcontainer;
+
       // @ts-ignore - We know filePath exists on both FileAction and our diff action (which reuses FileAction structure)
       const fullPath = path.join(wc.workdir, data.action.filePath);
 
@@ -585,13 +586,17 @@ export class WorkbenchStore {
 
       if (data.action.type === 'diff') {
         const originalFile = this.#filesStore.getFile(fullPath);
+
         if (originalFile && originalFile.content) {
-            contentToWrite = applyDiff(originalFile.content, data.action.content);
+          contentToWrite = applyDiff(originalFile.content, data.action.content);
         } else {
-            console.warn(`Cannot apply diff: File ${fullPath} not found or empty.`);
-            // Fallback: If file doesn't exist, we can't apply a diff. 
-            // In a real scenario, we might want to error out or treat it as new content if the diff is actually just content.
-            // But for now, let's keep it safe.
+          console.warn(`Cannot apply diff: File ${fullPath} not found or empty.`);
+
+          /*
+           * Fallback: If file doesn't exist, we can't apply a diff.
+           * In a real scenario, we might want to error out or treat it as new content if the diff is actually just content.
+           * But for now, let's keep it safe.
+           */
         }
       } else {
         // It is a file action, so content is always string

@@ -121,10 +121,12 @@ export async function selectContext(props: {
 
   const cacheKey = JSON.stringify({ model: currentModel, provider: currentProvider, summary, lastUserMessage });
   const cached = contextSelectionCache.get(cacheKey);
+
   if (cached) {
     if (onFinish) {
       onFinish({} as any);
     }
+
     return cached as FileMap;
   }
 
@@ -194,9 +196,7 @@ export async function selectContext(props: {
       apiKeys,
       providerSettings,
     }),
-    ...(provider.name === 'ZAI'
-      ? { temperature: 0.6, topP: 0.9, thinking: { type: 'enabled' } }
-      : {}),
+    ...(provider.name === 'ZAI' ? { temperature: 0.6, topP: 0.9, thinking: { type: 'enabled' } } : {}),
   });
 
   const response = resp.text;
@@ -252,6 +252,7 @@ export async function selectContext(props: {
   }
 
   contextSelectionCache.set(cacheKey, filteredFiles);
+
   return filteredFiles;
 
   // generateText({

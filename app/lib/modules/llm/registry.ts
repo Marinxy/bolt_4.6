@@ -15,8 +15,11 @@ import OpenRouterProvider from './providers/open-router';
 import PerplexityProvider from './providers/perplexity';
 import TogetherProvider from './providers/together';
 import XAIProvider from './providers/xai';
-// import ZAIProvider from './providers/zai';
-// import ZeroOneProvider from './providers/01';
+
+/*
+ * import ZAIProvider from './providers/zai';
+ * import ZeroOneProvider from './providers/01';
+ */
 
 export const PROVIDER_LIST = [
   new OpenAIProvider(),
@@ -31,8 +34,11 @@ export const PROVIDER_LIST = [
   new PerplexityProvider(),
   new TogetherProvider(),
   new XAIProvider(),
-  // new ZAIProvider(),
-  // new ZeroOneProvider(),
+
+  /*
+   * new ZAIProvider(),
+   * new ZeroOneProvider(),
+   */
   new DeepseekProvider(),
   new HyperbolicProvider(),
   new GithubProvider(),

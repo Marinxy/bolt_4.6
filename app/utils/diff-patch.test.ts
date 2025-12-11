@@ -1,4 +1,3 @@
-
 import { describe, it, expect } from 'vitest';
 import { applyDiff } from './diff-patch';
 

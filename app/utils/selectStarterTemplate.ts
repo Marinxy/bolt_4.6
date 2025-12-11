@@ -67,6 +67,12 @@ const templates: Template[] = STARTER_TEMPLATES.filter((t) => !t.name.includes('
 
 const parseSelectedTemplate = (llmOutput: string): { template: string; title: string } | null => {
   try {
+    // Check if llmOutput is defined and is a string
+    if (!llmOutput || typeof llmOutput !== 'string') {
+      console.error('Invalid llmOutput:', llmOutput);
+      return null;
+    }
+
     // Extract content between <templateName> tags
     const templateNameMatch = llmOutput.match(/<templateName>(.*?)<\/templateName>/);
     const titleMatch = llmOutput.match(/<title>(.*?)<\/title>/);
@@ -96,6 +102,15 @@ export const selectStarterTemplate = async (options: { message: string; model: s
   });
   const respJson: { text: string } = await response.json();
   console.log(respJson);
+
+  // Check if response has the expected structure
+  if (!respJson || typeof respJson !== 'object' || !('text' in respJson)) {
+    console.error('Invalid response structure:', respJson);
+    return {
+      template: 'blank',
+      title: 'Untitled Project',
+    };
+  }
 
   const { text } = respJson;
   const selectedTemplate = parseSelectedTemplate(text);

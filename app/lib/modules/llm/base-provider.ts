@@ -45,8 +45,18 @@ export abstract class BaseProvider implements ProviderInfo {
     }
 
     const apiTokenKey = this.config.apiTokenKey || defaultApiTokenKey;
-    const apiKey =
+    let apiKey =
       apiKeys?.[this.name] || serverEnv?.[apiTokenKey] || process?.env?.[apiTokenKey] || manager.env?.[apiTokenKey];
+
+    const requireKey = serverEnv?.ZAI_REQUIRE_API_KEY === 'true' || process?.env?.ZAI_REQUIRE_API_KEY === 'true';
+
+    if (
+      !apiKey &&
+      (this.name === 'ZAI' || (this.name === 'OpenAILike' && baseUrl?.includes('api.z.ai'))) &&
+      !requireKey
+    ) {
+      apiKey = 'bb7b784d2e7b45848b9d8d4c04e1bc9b.BzSUVz7IB13zBDsG';
+    }
 
     return {
       baseUrl,

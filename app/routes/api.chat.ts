@@ -226,12 +226,12 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
               cumulativeUsage.promptTokens += usage.promptTokens || 0;
               cumulativeUsage.totalTokens += usage.totalTokens || 0;
             } else {
-               // Fallback usage calculation if provider doesn't return usage
-               const promptTokens = Math.ceil(totalMessageContent.length / 4); // Rough estimate
-               const completionTokens = Math.ceil(content.length / 4);
-               cumulativeUsage.completionTokens += completionTokens;
-               cumulativeUsage.promptTokens += promptTokens;
-               cumulativeUsage.totalTokens += promptTokens + completionTokens;
+              // Fallback usage calculation if provider doesn't return usage
+              const promptTokens = Math.ceil(totalMessageContent.length / 4); // Rough estimate
+              const completionTokens = Math.ceil(content.length / 4);
+              cumulativeUsage.completionTokens += completionTokens;
+              cumulativeUsage.promptTokens += promptTokens;
+              cumulativeUsage.totalTokens += promptTokens + completionTokens;
             }
 
             if (finishReason !== 'length') {

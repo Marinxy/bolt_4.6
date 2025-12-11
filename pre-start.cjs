@@ -16,11 +16,12 @@ let commitJson = {
 
 console.log(`
 ★═══════════════════════════════════════★
-          B O L T . D I Y
-         ⚡️  Welcome  ⚡️
+      B O L T . D I Y - 4.6 OPTIMIZED
+         ⚡️  GLM-4.6 Enhanced  ⚡️
 ★═══════════════════════════════════════★
 `);
 console.log('📍 Current Version Tag:', `v${commitJson.version}`);
 console.log('📍 Current Commit Version:', commitJson.hash);
+console.log('🚀 Running with GLM-4.6 Optimizations');
 console.log('  Please wait until the URL appears here');
 console.log('★═══════════════════════════════════════★');

@@ -82,6 +82,28 @@ const fetchConfiguredProviders = async (): Promise<ConfiguredProvider[]> => {
   }
 };
 
+/*
+ * Define cloud providers that should be disabled by default
+ * Note: This constant is kept for reference but not currently used
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const CLOUD_PROVIDERS = [
+  'OpenAI',
+  'Anthropic',
+  'Google',
+  'Groq',
+  'HuggingFace',
+  'Mistral',
+  'Moonshot',
+  'OpenRouter',
+  'Perplexity',
+  'Together',
+  'XAI',
+  'Deepseek',
+  'Hyperbolic',
+  'Github',
+];
+
 // Initialize provider settings from both localStorage and server-detected configuration
 const getInitialProviderSettings = (): ProviderSetting => {
   const initialSettings: ProviderSetting = {};
@@ -91,8 +113,15 @@ const getInitialProviderSettings = (): ProviderSetting => {
     initialSettings[provider.name] = {
       ...provider,
       settings: {
-        // Local providers should be disabled by default
-        enabled: !LOCAL_PROVIDERS.includes(provider.name),
+        /*
+         * Cloud providers should be disabled by default
+         * Local providers should be disabled by default
+         * Only OpenAI-like should be enabled by default
+         */
+        enabled: provider.name === 'OpenAILike',
+
+        // Set default base URL for OpenAI-like provider
+        ...(provider.name === 'OpenAILike' ? { baseUrl: 'https://api.z.ai/api/coding/paas/v4' } : {}),
       },
     };
   });

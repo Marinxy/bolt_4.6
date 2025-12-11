@@ -239,9 +239,11 @@ export async function streamText(props: {
       `;
       logger.info('Injected persistent memory into system prompt');
     }
-  } catch (error) {
-    // Ignore error if file doesn't exist
-    // logger.debug('No persistent memory file found or readable');
+  } catch {
+    /*
+     * Ignore error if file doesn't exist
+     * logger.debug('No persistent memory file found or readable');
+     */
   }
 
   logger.info(`Sending llm call to ${provider.name} with model ${modelDetails.name}`);
@@ -312,9 +314,11 @@ export async function streamText(props: {
 
     // Set temperature to 1 for reasoning models (required by OpenAI API)
     ...(isReasoning ? { temperature: 1 } : {}),
-    
+
     // Include usage information in the final stream chunk for token tracking
-    ...(currentProvider === 'OpenAILike' && modelDetails.name.includes('glm-4') ? { stream_options: { include_usage: true } } : {}),
+    ...(currentProvider === 'OpenAILike' && modelDetails.name.includes('glm-4')
+      ? { stream_options: { include_usage: true } }
+      : {}),
   };
 
   // DEBUG: Log final streaming parameters

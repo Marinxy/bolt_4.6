@@ -50,6 +50,8 @@ export default function LocalProvidersTab() {
             defaultBaseUrl = 'http://127.0.0.1:11434';
           } else if (key === 'LMStudio') {
             defaultBaseUrl = 'http://127.0.0.1:1234';
+          } else if (key === 'OpenAILike') {
+            defaultBaseUrl = 'https://api.z.ai/api/coding/paas/v4';
           }
         }
 
