@@ -18,6 +18,7 @@ import { description } from '~/lib/persistence';
 import Cookies from 'js-cookie';
 import { createSampler } from '~/utils/sampler';
 import type { ActionAlert, DeployAlert, SupabaseAlert } from '~/types/actions';
+import { applyDiff } from '~/utils/diff-patch';
 
 const { saveAs } = fileSaver;
 
@@ -561,15 +562,9 @@ export class WorkbenchStore {
       return;
     }
 
-    if (data.action.type === 'file') {
+    if (data.action.type === 'file' || data.action.type === 'diff') {
       const wc = await webcontainer;
       const fullPath = path.join(wc.workdir, data.action.filePath);
-
-      /*
-       * For scoped locks, we would need to implement diff checking here
-       * to determine if the AI is modifying existing code or just adding new code
-       * This is a more complex feature that would be implemented in a future update
-       */
 
       if (this.selectedFile.value !== fullPath) {
         this.setSelectedFile(fullPath);
@@ -585,9 +580,23 @@ export class WorkbenchStore {
         await artifact.runner.runAction(data, isStreaming);
       }
 
-      this.#editorStore.updateFile(fullPath, data.action.content);
+      let contentToWrite = data.action.content;
 
-      if (!isStreaming && data.action.content) {
+      if (data.action.type === 'diff') {
+        const originalFile = this.#filesStore.getFile(fullPath);
+        if (originalFile && originalFile.content) {
+            contentToWrite = applyDiff(originalFile.content, data.action.content);
+        } else {
+            console.warn(`Cannot apply diff: File ${fullPath} not found or empty.`);
+            // Fallback: If file doesn't exist, we can't apply a diff. 
+            // In a real scenario, we might want to error out or treat it as new content if the diff is actually just content.
+            // But for now, let's keep it safe.
+        }
+      }
+
+      this.#editorStore.updateFile(fullPath, contentToWrite);
+
+      if (!isStreaming && contentToWrite) {
         await this.saveFile(fullPath);
       }
 

@@ -373,6 +373,15 @@ export class StreamingMessageParser {
       }
 
       (actionAttributes as FileAction).filePath = filePath;
+    } else if (actionType === 'diff') {
+      const filePath = this.#extractAttribute(actionTag, 'filePath') as string;
+
+      if (!filePath) {
+        logger.debug('Diff file path not specified');
+      }
+
+      (actionAttributes as FileAction).filePath = filePath;
+      // We reuse the FileAction type for diffs since they share the same structure (path + content)
     } else if (!['shell', 'start'].includes(actionType)) {
       logger.warn(`Unknown action type '${actionType}'`);
     }
