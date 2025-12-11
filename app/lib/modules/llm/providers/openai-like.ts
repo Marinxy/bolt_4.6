@@ -52,6 +52,7 @@ export default class OpenAILikeProvider extends BaseProvider {
         maxTokenAllowed:
           model.context_length ||
           (model.id.toLowerCase().includes('glm-4') ? 200000 : 8000),
+        maxCompletionTokens: model.id.toLowerCase().includes('glm-4') ? 16384 : undefined,
       }));
     } catch (error) {
       console.log(`${this.name}: Not allowed to GET /models endpoint for provider`, error);
@@ -73,6 +74,7 @@ export default class OpenAILikeProvider extends BaseProvider {
           label: 'GLM-4.6 (Z.ai)',
           provider: this.name,
           maxTokenAllowed: 200000,
+          maxCompletionTokens: 16384,
         },
       ];
     }

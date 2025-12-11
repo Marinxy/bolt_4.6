@@ -1,6 +1,19 @@
-# bolt.diy
+# bolt.diy (Z.ai GLM-4.6 Optimized Fork)
 
 [![bolt.diy: AI-Powered Full-Stack Web Development in the Browser](./public/social_preview_index.jpg)](https://bolt.diy)
+
+**This is a specialized fork of bolt.diy optimized for the Z.ai GLM-4.6 model and the "GLM Coding Plan Lite".**
+
+It features:
+*   **🧠 200k Context Window:** Unlocked context capacity with dynamic file selection (50+ files).
+*   **⚡ High Output:** Increased output token limit (16k) for generating massive files.
+*   **💾 Persistent Memory:** A `.bolt/memory.md` file that preserves project context across sessions.
+*   **🚀 Performance:** Optimized UI streaming to prevent freezing during large code generations.
+*   **🤖 Auto-Reflection:** Dedicated prompt with self-correction to save prompt quota.
+
+[Read the full GLM-4.6 Optimization Guide](./GLM_4.6_OPTIMIZATIONS.md)
+
+---
 
 Welcome to bolt.diy, the official open source version of Bolt.new, which allows you to choose the LLM that you use for each prompt! Currently, you can use OpenAI, Anthropic, Ollama, OpenRouter, Gemini, LMStudio, Mistral, xAI, HuggingFace, DeepSeek, Groq, Cohere, Together, Perplexity, Moonshot (Kimi), Hyperbolic, GitHub Models, Amazon Bedrock, and OpenAI-like providers - and it is easily extended to use any other model supported by the Vercel AI SDK! See the instructions below for running this locally and extending it to include more models.
 
@@ -514,3 +527,28 @@ For answers to common questions, issues, and to see a list of recommended models
 
 bolt.diy source code is distributed as MIT, but it uses WebContainers API that [requires licensing](https://webcontainers.io/enterprise) for production usage in a commercial, for-profit setting. (Prototypes or POCs do not require a commercial license.) If you're using the API to meet the needs of your customers, prospective customers, and/or employees, you need a license to ensure compliance with our Terms of Service. Usage of the API in violation of these terms may result in your access being revoked.
 # Test commit to trigger Security Analysis workflow
+# bolt.diy
+
+## GLM-4.6 (Z.AI) Integration
+
+- Endpoint: `https://api.z.ai/api/coding/paas/v4`
+- Provider: `ZAI` (OpenAI-compatible)
+- Configuration is built-in; the app uses a default Coding endpoint and key for local testing. You can still override via env:
+  - `ZAI_API_KEY`
+  - `ZAI_API_BASE_URL`
+
+### Recommended Defaults
+- Model: `glm-4.6` (default and exclusive)
+- Parameters:
+  - `thinking: { type: "enabled" }`
+  - `temperature: 0.6`
+  - `topP: 0.9`
+  - `max_tokens`: adaptive based on task, typically 4096–16000
+
+### Setup
+- The app defaults to provider `ZAI` and model `glm-4.6`; other providers are removed.
+
+### Notes
+- Context window managed up to 200k tokens for `glm-4.6`
+- Streaming supports reasoning deltas where applicable
+- Retry/backoff and circuit breaker guard interactions for resilience

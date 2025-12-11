@@ -10,6 +10,8 @@ import { createScopedLogger } from '~/utils/logger';
 import { createFilesContext, extractPropertiesFromMessage } from './utils';
 import { discussPrompt } from '~/lib/common/prompts/discuss-prompt';
 import type { DesignScheme } from '~/types/design-scheme';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 export type Messages = Message[];
 
@@ -217,6 +219,29 @@ export async function streamText(props: {
     `;
   } else {
     console.log('No locked files found from any source for prompt.');
+  }
+
+  // Inject persistent memory if available
+  try {
+    const memoryPath = path.join(WORK_DIR, '.bolt', 'memory.md');
+    const memoryContent = await fs.readFile(memoryPath, 'utf-8');
+
+    if (memoryContent.trim()) {
+      systemPrompt = `${systemPrompt}
+      
+      PROJECT MEMORY (Persistent Context):
+      The following is a persistent memory file for this project. It contains architectural decisions, user preferences, and important context that should be preserved across sessions.
+      ---
+      ${memoryContent}
+      ---
+      
+      When making significant architectural changes or learning new user preferences, you should update this memory file using the file modification tools.
+      `;
+      logger.info('Injected persistent memory into system prompt');
+    }
+  } catch (error) {
+    // Ignore error if file doesn't exist
+    // logger.debug('No persistent memory file found or readable');
   }
 
   logger.info(`Sending llm call to ${provider.name} with model ${modelDetails.name}`);

@@ -65,15 +65,25 @@ export function useMessageParser() {
       messageParser.reset();
     }
 
-    for (const [index, message] of messages.entries()) {
-      if (message.role === 'assistant' || message.role === 'user') {
-        const newParsedContent = messageParser.parse(message.id, extractTextContent(message));
-        setParsedMessages((prevParsed) => ({
-          ...prevParsed,
-          [index]: !reset ? (prevParsed[index] || '') + newParsedContent : newParsedContent,
-        }));
+    setParsedMessages((prevParsed) => {
+      const newParsed = { ...prevParsed };
+      let hasUpdates = false;
+
+      for (const [index, message] of messages.entries()) {
+        if (message.role === 'assistant' || message.role === 'user') {
+          const newParsedContent = messageParser.parse(message.id, extractTextContent(message));
+
+          const currentContent = !reset ? (newParsed[index] || '') + newParsedContent : newParsedContent;
+
+          if (currentContent !== newParsed[index]) {
+            newParsed[index] = currentContent;
+            hasUpdates = true;
+          }
+        }
       }
-    }
+
+      return hasUpdates ? newParsed : prevParsed;
+    });
   }, []);
 
   return { parsedMessages, parseMessages };
