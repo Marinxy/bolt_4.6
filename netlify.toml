@@ -4,6 +4,7 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  ELECTRON_SKIP_DOWNLOAD = "true"
 
 [[redirects]]
   from = "/api/*"
