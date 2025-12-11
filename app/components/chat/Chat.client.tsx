@@ -28,6 +28,7 @@ import type { ElementInfo } from '~/components/workbench/Inspector';
 import type { TextUIPart, FileUIPart, Attachment } from '@ai-sdk/ui-utils';
 import { useMCPStore } from '~/lib/stores/mcp';
 import type { LlmErrorAlertType } from '~/types/actions';
+import { updateUsage } from '~/lib/stores/usage';
 
 const logger = createScopedLogger('Chat');
 
@@ -169,6 +170,7 @@ export const ChatImpl = memo(
             usage,
             messageLength: message.content.length,
           });
+          updateUsage(usage);
         }
 
         logger.debug('Finished streaming');
