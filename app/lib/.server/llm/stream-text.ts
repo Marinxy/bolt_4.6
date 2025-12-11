@@ -312,6 +312,9 @@ export async function streamText(props: {
 
     // Set temperature to 1 for reasoning models (required by OpenAI API)
     ...(isReasoning ? { temperature: 1 } : {}),
+    
+    // Include usage information in the final stream chunk for token tracking
+    ...(currentProvider === 'OpenAILike' && modelDetails.name.includes('glm-4') ? { stream_options: { include_usage: true } } : {}),
   };
 
   // DEBUG: Log final streaming parameters

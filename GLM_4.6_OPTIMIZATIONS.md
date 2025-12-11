@@ -38,6 +38,12 @@ This document outlines the optimizations implemented in this fork of Bolt.diy, s
 *   **Streaming Optimization:** Optimized the `useMessageParser` hook to batch React state updates during streaming. This eliminates the "UI freeze/spinning wheel" issue when the model generates code at high speed.
 *   **API Key Visibility:** Fixed a UI bug where the API Key input was hidden for "OpenAI Compatible" providers.
 
+### 7. 📊 Token Usage Tracking
+*   **Feature:** Implemented a real-time token usage indicator in the header.
+*   **Mechanism:** Added `stream_options: { include_usage: true }` to GLM-4.6 API requests to force token usage reporting in streaming responses.
+*   **Fallback:** Implemented character-based token estimation when API doesn't return usage data.
+*   **UI Component:** Created `TokenUsage.tsx` with a progress bar showing context utilization against the 200k limit.
+
 ## 🔮 Future Roadmap & Possible Optimizations
 
 To further enhance the experience with GLM-4.6, the following optimizations are recommended for future development:
