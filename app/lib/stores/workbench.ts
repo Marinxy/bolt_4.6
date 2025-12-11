@@ -593,6 +593,9 @@ export class WorkbenchStore {
             // In a real scenario, we might want to error out or treat it as new content if the diff is actually just content.
             // But for now, let's keep it safe.
         }
+      } else {
+        // It is a file action, so content is always string
+        contentToWrite = data.action.content;
       }
 
       this.#editorStore.updateFile(fullPath, contentToWrite);

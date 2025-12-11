@@ -30,7 +30,12 @@ export interface SupabaseAction extends BaseAction {
   projectId?: string;
 }
 
-export type BoltAction = FileAction | ShellAction | StartAction | BuildAction | SupabaseAction;
+export interface DiffAction extends BaseAction {
+  type: 'diff';
+  filePath: string;
+}
+
+export type BoltAction = FileAction | ShellAction | StartAction | BuildAction | SupabaseAction | DiffAction;
 
 export type BoltActionData = BoltAction | BaseAction;
 
